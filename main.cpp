@@ -8,8 +8,9 @@
 #include <iostream>
 
 #include <cstdio>
-
+extern "C"{
 #include "curses.h"
+}
 #include "color.h"
 #include "shape.h"
 #include "view.h"
@@ -32,7 +33,7 @@ int main(){
         order = getch();
         switch(order){
             case(KEY_UP):   idx = idx == 0 ? shapes.size()-1 : idx - 1; break;
-            case(KEY_DOWN): idx = idx == shapes.size()-1 ? 0 : idx + 1; break;
+            case(KEY_DOWN): idx = idx == (int) shapes.size()-1 ? 0 : idx + 1; break;
             case(KEY_LEFT): shapes[idx].rotate(); break;
             case(KEY_RIGHT): shapes[idx].rotate(); break;
             default: break;

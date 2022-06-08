@@ -20,7 +20,7 @@ inline void operator += (std::vector<chtype> &raw, chtype append){
 }
 
 inline void operator += (std::vector<chtype> &raw, std::string &append){
-    for(int i=0; i<=append.length()-1; i++)
+    for(int i=0; i<=(int)append.length()-1; i++)
         raw += (chtype) (append[i] | COLOR_PAIR(COLOR_BLACK));
 }
 
@@ -28,7 +28,6 @@ inline void operator += (std::vector<chtype> &raw, const char *append){
     if(append != nullptr){
         int i = 0;
         while(1){
-            printf("ascii: %u\n", append[i]);
             if(append[i] == 0)
                 break;
             else
