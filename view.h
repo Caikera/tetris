@@ -20,7 +20,8 @@ inline void quick_view(const _shape &sp, WINDOW* scr = stdscr){
         str += "| ";
         for(int j=0; j<=3; j++){
             if(!sp.contents[i][j].filled){
-                str += "  ";
+                str += (chtype) ' ' | COLOR_PAIR(COLOR_BLACK);
+                str += (chtype) ' ' | COLOR_PAIR(COLOR_BLACK);
             }
             else{
                 str += (chtype) ' ' | COLOR_PAIR(RGB_map(sp.contents[i][j].color));
@@ -32,7 +33,6 @@ inline void quick_view(const _shape &sp, WINDOW* scr = stdscr){
     str += "+----------+\n";
     for(chtype ch: str)
         waddch(scr, ch);
-    wrefresh(scr);
 }
 
 inline void quick_view(const _playground &pg, WINDOW* scr = stdscr){
@@ -51,7 +51,6 @@ inline void quick_view(const _playground &pg, WINDOW* scr = stdscr){
     }
     for(chtype ch: str)
         waddch(scr, ch);
-    wrefresh(scr);
 }
 
 inline void quick_view(chtype (&vbuffer)[pg_height][2*pg_width], WINDOW* scr = stdscr){
@@ -60,7 +59,6 @@ inline void quick_view(chtype (&vbuffer)[pg_height][2*pg_width], WINDOW* scr = s
             addch(vbuffer[r][c]);
         waddstr(scr, "\n");
     }
-    wrefresh(scr);
 }
 
 #endif //TETRIS_VIEW_H
