@@ -51,10 +51,10 @@ void task_vbuffer_display(){
         waddstr(stdscr, text);
         //display the score and next shape
         wmove(stdscr, 3, 2*(pg_width+2));
-        std::sprintf(text, "Your score is %003d.\n", score);
+        std::sprintf(text, "Your score is %004d.\n", score);
         waddstr(stdscr, text);
         wmove(stdscr, 4, 2*(pg_width+2));
-        std::sprintf(text, "Next shape is:\n", score);
+        std::sprintf(text, "Next shape is:\n");
         waddstr(stdscr, text);
         handle_playground([&](_playground &pg)->void{quick_view(pg.next_shape, stdscr, 5, 2*(pg_width+2));});
         wrefresh(stdscr);
