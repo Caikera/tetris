@@ -50,8 +50,7 @@ void task_vbuffer_display(){
         std::sprintf(text, "  Toppest block is in %2dth row.\n", pg.get_toppest_r((4+pg_height-1)/2, 4, pg_height-1));
         waddstr(stdscr, text);
         //display the score and next shape
-        wmove(stdscr, 3, 2*(pg_width+2));
-        std::sprintf(text, "Your score is %004d.\n", score);
+        std::sprintf(text, "  Your score is %004d.\n", score);
         waddstr(stdscr, text);
         wmove(stdscr, 4, 2*(pg_width+2));
         std::sprintf(text, "Next shape is:\n");
@@ -60,7 +59,7 @@ void task_vbuffer_display(){
         wrefresh(stdscr);
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         if(gameover){
-            wmove(stdscr, pg_height-4+1, 0);
+            wmove(stdscr, pg_height-4+2, 0);
             addstr("  GAME OVER.\n  To restart the game, please relunch the program.");
             wrefresh(stdscr);
             break;

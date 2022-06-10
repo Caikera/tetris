@@ -13,12 +13,11 @@ add_executable(
         playground.cpp
         playground.h
         content.h
-        mygetch.cpp
-        mygetch.h
         OS.cpp
         OS.h
         ${APP_ICON_RESOURCE_WINDOWS}
 )
+
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
@@ -32,6 +31,13 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     find_package(Curses REQUIRED)
     include_directories(${CURSES_INCLUDE_DIR})
     target_link_libraries(tetris curses)
+ELSE()
+    MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
+    add_definitions(-D CYGWIN)
+    find_package(Curses REQUIRED)
+    include_directories(${CURSES_INCLUDE_DIR})
+    MESSAGE(STATUS "CURSES_INCLUDE_DIR is ${CURSES_INCLUDE_DIR}")
+    target_link_libraries(tetris Curses)
 ENDIF()
 
 
