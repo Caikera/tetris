@@ -24,7 +24,18 @@ chtype vbuffer[pg_height][2*pg_width];
 
 bool    gameover           = false;
 int     score              = 0;
-double  current_difficulty = 0;
+
+
+double get_difficulty(double set){
+    static double current_difficulty = 0;
+    std::unique_lock<std::mutex> locker;
+    if(set <= 4.9 && set >= 0){
+        //beep();
+        current_difficulty = set <= 4.9 && set >= 0 ? set : current_difficulty;
+    }
+    return current_difficulty;
+}
+
 
 void handle_playground(std::function<void(_playground &pg)> handler){
     std::mutex locker;
@@ -52,7 +63,9 @@ void task_vbuffer_display(){
         std::sprintf(text, "  Toppest block is in %2dth row.\n", pg.get_toppest_r((4+pg_height-1)/2, 4, pg_height-1));
         waddstr(stdscr, text);
         //display the score and next shape
-        std::sprintf(text, "  Your score is %004d.\n  Current difficulty level is %02d.\n", score, current_difficulty);
+        std::sprintf(text, "  Your score is %004d.\n", score);
+        waddstr(stdscr, text);
+        std::sprintf(text, "  Current difficulty level is %1.2lf.\n", get_difficulty(-1));
         waddstr(stdscr, text);
         wmove(stdscr, 4, 2*(pg_width+2));
         std::sprintf(text, "Next shape is:\n");
@@ -73,13 +86,14 @@ void task_shape_logic(){
     //std::unique_lock<std::mutex> locker;
     while(1){
         if(pg.shape_lower_surface_touch()){
-            std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-current_difficulty)*100));
+            std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-get_difficulty(-1))*100));
             if(pg.shape_lower_surface_touch()){
                 handle_playground([&](_playground &pg)->void{pg.solidify();});
-                std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-current_difficulty)*20));
+                std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-get_difficulty(-1))*20));
                 handle_playground([&](_playground &pg)->void{pg.to_next_shape();});
             }
             handle_playground([&](_playground &pg)->void{score += pg.remove_full();});
+            get_difficulty(( (double)score / 100 * 4.9));
         }else{
             handle_playground([&](_playground &pg)->void{pg.shape_mv_down();});
         }
@@ -87,7 +101,7 @@ void task_shape_logic(){
             gameover = true;
             break;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-current_difficulty)*60));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-get_difficulty(-1))*60));
     }
 }
 
@@ -116,11 +130,13 @@ int main(){
     std::thread thread_display(task_vbuffer_display);
     std::thread thread_shape_logic(task_shape_logic);
     std::thread thread_controll(task_controll);
+    while(1){
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        if(gameover) break;
+    }
+    while(1);
     thread_controll.join();
     thread_shape_logic.join();
     thread_display.join();
-    while(1){
-        current_difficulty = score / 100 * 4.9 < 4.9 ? score / 100 * 4.9 : 4.9;
-    }
     return 9;
 }
