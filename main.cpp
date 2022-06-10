@@ -2,14 +2,12 @@
 // Created by YLW20 on 2022/6/8.
 //
 
-#include <array>
+
 #include <chrono>
 #include <functional>
 #include <iostream>
 #include <mutex>
-#include <string>
 #include <thread>
-#include <vector>
 
 #include <cstdio>
 #include <ctime>
@@ -23,7 +21,6 @@ extern "C"{
 std::default_random_engine e(std::time(nullptr));
 _playground pg;
 chtype vbuffer[pg_height][2*pg_width];
-bool permit_mv = true;
 bool gameover = false;
 int  score = 0;
 
@@ -34,16 +31,13 @@ void handle_playground(std::function<void(_playground &pg)> handler){
     locker.unlock();
 }
 
-//WINDOW* main_win;
-WINDOW* sub_win;
-
-void task_vbuffer_display(_playground &pg){
+void task_vbuffer_display(){
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
-    char text[32];
+    char text[64];
     while(1){
         handle_playground([&](_playground &pg)->void{pg.display_buffer(vbuffer);});
         pg.display_buffer(vbuffer);
-        //screen: display the playground
+        //display the playground
         wmove(stdscr, 0, 0);
         for(int r=4; r<=pg_height-1; r++){
             std::sprintf(text, "%2d", r);
@@ -53,21 +47,27 @@ void task_vbuffer_display(_playground &pg){
             }
             waddch(stdscr, '\n');
         }
-        std::sprintf(text, "  Toppest block is in %2dth row.", pg.get_toppest_r((4+pg_height-1)/2, 4, pg_height-1));
+        std::sprintf(text, "  Toppest block is in %2dth row.\n", pg.get_toppest_r((4+pg_height-1)/2, 4, pg_height-1));
         waddstr(stdscr, text);
+        //display the score and next shape
+        wmove(stdscr, 3, 2*(pg_width+2));
+        std::sprintf(text, "Your score is %003d.\n", score);
+        waddstr(stdscr, text);
+        wmove(stdscr, 4, 2*(pg_width+2));
+        std::sprintf(text, "Next shape is:\n", score);
+        waddstr(stdscr, text);
+        handle_playground([&](_playground &pg)->void{quick_view(pg.next_shape, stdscr, 5, 2*(pg_width+2));});
         wrefresh(stdscr);
-        //sub_scr display the score and next shape
-        std::sprintf(text, "Your score is %d.\nNext shape is:\n", score);
-        wmove(sub_win, 0, 0);
-        waddstr(sub_win, text);
-        handle_playground([&](_playground pg)->void{quick_view(pg.next_shape, sub_win);});
-        wrefresh(sub_win);
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        if(gameover) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if(gameover){
+            wmove(stdscr, pg_height-4+1, 0);
+            addstr("GAME OVER.\n To restart the game, please relunch the program.");
+            break;
+        }
     }
 }
 
-void task_shape_logic(_playground &pg){
+void task_shape_logic(){
     //std::unique_lock<std::mutex> locker;
     while(1){
         handle_playground([&](_playground &pg)->void{pg.shape_mv_down();});
@@ -84,11 +84,12 @@ void task_shape_logic(_playground &pg){
             gameover = true;
             break;
         }
+        score++;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
-void task_controll(_playground &pg){
+void task_controll(){
     while(1){
         int order = getch();
         switch(order){
@@ -102,29 +103,17 @@ void task_controll(_playground &pg){
     }
 }
 
-void task_count_score(){
-    while(1) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(900));
-        score++;
-        if(gameover) break;
-    }
-}
-
-
 int main(){
     initscr();
     start_color();
     keypad(stdscr, TRUE);
     curs_set(0);
-//    main_win = newwin(pg_height+2, 2*(pg_width+4), 0, 0);
-    sub_win  = subwin(stdscr, 20, 20, 0, 2*(pg_width+4));
     //nodelay(stdscr, TRUE);
     color_pair_init();
     auto shapes = shapes_define();
-    std::thread thread_display(task_vbuffer_display, std::ref(pg));
-    std::thread thread_shape_logic(task_shape_logic, std::ref(pg));
-    std::thread thread_controll(task_controll, std::ref(pg));
-    std::thread thread_count_score(task_count_score);
+    std::thread thread_display(task_vbuffer_display);
+    std::thread thread_shape_logic(task_shape_logic);
+    std::thread thread_controll(task_controll);
     while(1);
     return 0;
 }

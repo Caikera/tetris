@@ -13,26 +13,26 @@
 #include "shape.h"
 
 
-inline void quick_view(const _shape &sp, WINDOW* scr = stdscr){
-    curses_string str;
-    str += "+----------+\n";
+inline void quick_view(const _shape &sp, WINDOW* scr = stdscr, int beg_y = 0, int beg_x = 0){
+    wmove(scr, beg_y, beg_x);
+    addstr("+----------+");
     for(int i=0; i<=3; i++){
-        str += "| ";
+        wmove(scr, beg_y+1+i, beg_x);
+        addstr("| ");
         for(int j=0; j<=3; j++){
             if(!sp.contents[i][j].filled){
-                str += (chtype) ' ' | COLOR_PAIR(COLOR_BLACK);
-                str += (chtype) ' ' | COLOR_PAIR(COLOR_BLACK);
+                addch( (chtype) ' ' | COLOR_PAIR(COLOR_BLACK) );
+                addch( (chtype) ' ' | COLOR_PAIR(COLOR_BLACK) );
             }
             else{
-                str += (chtype) ' ' | COLOR_PAIR(RGB_map(sp.contents[i][j].color));
-                str += (chtype) ' ' | COLOR_PAIR(RGB_map(sp.contents[i][j].color));
+                addch( (chtype) ' ' | COLOR_PAIR(RGB_map(sp.contents[i][j].color)) );
+                addch( (chtype) ' ' | COLOR_PAIR(RGB_map(sp.contents[i][j].color)) );
             }
         }
-        str += " |\n";
+        addstr(" |");
     }
-    str += "+----------+\n";
-    for(chtype ch: str)
-        waddch(scr, ch);
+    wmove(scr, beg_y+1+4, beg_x);
+    addstr("+----------+");
 }
 
 inline void quick_view(const _playground &pg, WINDOW* scr = stdscr){
