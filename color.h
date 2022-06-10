@@ -7,6 +7,12 @@
 
 #include "curses.h"
 
+struct _RGB{
+    short R;
+    short G;
+    short B;
+};
+
 inline int color_pair_init(){
     for (int i = 16; i < 256; i++)
         if(init_pair(i, COLOR_BLACK, i) == ERR)
@@ -21,6 +27,16 @@ inline short RGB_map(unsigned short R, unsigned short G, unsigned short B){
     R = R * 6.0 / 256.0;
     G = G * 6.0 / 256.0;
     B = B * 6.0 / 256.0;
+    return ( R*36 + G*6 + B*1 + 16);
+}
+
+inline short RGB_map(const _RGB &RGB){
+    /**
+     map RGB value to short number in range 16-215 for PDCurses color pair
+     **/
+    short R = RGB.R * 6.0 / 256.0;
+    short G = RGB.G * 6.0 / 256.0;
+    short B = RGB.B * 6.0 / 256.0;
     return ( R*36 + G*6 + B*1 + 16);
 }
 
