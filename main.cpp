@@ -58,10 +58,11 @@ void task_vbuffer_display(){
         waddstr(stdscr, text);
         handle_playground([&](_playground &pg)->void{quick_view(pg.next_shape, stdscr, 5, 2*(pg_width+2));});
         wrefresh(stdscr);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         if(gameover){
             wmove(stdscr, pg_height-4+1, 0);
-            addstr("GAME OVER.\n To restart the game, please relunch the program.");
+            addstr("  GAME OVER.\n  To restart the game, please relunch the program.");
+            wrefresh(stdscr);
             break;
         }
     }
@@ -70,7 +71,6 @@ void task_vbuffer_display(){
 void task_shape_logic(){
     //std::unique_lock<std::mutex> locker;
     while(1){
-        handle_playground([&](_playground &pg)->void{pg.shape_mv_down();});
         if(pg.shape_lower_surface_touch()){
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             if(pg.shape_lower_surface_touch()){
@@ -78,14 +78,15 @@ void task_shape_logic(){
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 handle_playground([&](_playground &pg)->void{pg.to_next_shape();});
             }
-            handle_playground([&](_playground &pg)->void{pg.remove_full();});
+            handle_playground([&](_playground &pg)->void{score += pg.remove_full();});
+        }else{
+            handle_playground([&](_playground &pg)->void{pg.shape_mv_down();});
         }
         if(pg.exceed()){
             gameover = true;
             break;
         }
-        score++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
     }
 }
 
@@ -114,6 +115,9 @@ int main(){
     std::thread thread_display(task_vbuffer_display);
     std::thread thread_shape_logic(task_shape_logic);
     std::thread thread_controll(task_controll);
+    thread_controll.join();
+    thread_shape_logic.join();
+    thread_display.join();
     while(1);
-    return 0;
+    return 9;
 }

@@ -250,10 +250,12 @@ public:
             row_full[r] = is_row_full(r);
     }
 
-    void remove_full() {
+    int remove_full(){
         scan_for_full();
+        int count = 0;
         for (int r = 4; r <= pg_height - 2; r++)
             if (row_full[r]) {
+                count ++;
                 for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {255, 255, 255};
                 std::this_thread::sleep_for(std::chrono::milliseconds(25));
@@ -275,6 +277,7 @@ public:
                     }
 
             }
+        return count;
     }
 
     bool exceed(){

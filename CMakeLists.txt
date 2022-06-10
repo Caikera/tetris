@@ -5,7 +5,20 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_definitions(-D PDC_WIDE)
 
-add_executable(tetris main.cpp playground.cpp playground.h content.h mygetch.cpp mygetch.h OS.cpp OS.h)
+set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/appicon.rc")
+MESSAGE(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(
+        tetris main.cpp
+        playground.cpp
+        playground.h
+        content.h
+        mygetch.cpp
+        mygetch.h
+        OS.cpp
+        OS.h
+        ${APP_ICON_RESOURCE_WINDOWS}
+)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
@@ -19,17 +32,6 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     find_package(Curses REQUIRED)
     include_directories(${CURSES_INCLUDE_DIR})
     target_link_libraries(tetris curses)
-
-#    add_executable(tetris main.cpp shape.h color.h view.h curses_string.h)
-#    target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES})
-#    add_executable(tetris main.cpp shape.h color.h view.h curses_string.h)
-#    set(INCLUDE_DIR include)
-#    include_directories (${INCLUDE_DIR})
-#    find_package(Curses REQUIRED)
-#    include_directories(${CURSES_INCLUDE_DIR})
-#    MESSAGE(STATUS "curses_include_dir ${CURSES_INCLUDE_DIR}")
-#    #target_link_libraries(${PROJECT_NAME} ncurses)
-#    target_link_libraries(${PROJECT_NAME} ncurses)
 ENDIF()
 
 
