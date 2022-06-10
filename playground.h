@@ -15,6 +15,8 @@
 constexpr int pg_width  = 10 + 2;
 constexpr int pg_height = 2*(pg_width-2) + 4 + 1;
 
+extern double current_difficulty;
+
 
 typedef std::array<std::array<_content, pg_width>, pg_height> _pg_contents;
 
@@ -258,16 +260,16 @@ public:
                 count ++;
                 for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {255, 255, 255};
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+                std::this_thread::sleep_for(std::chrono::milliseconds( (int) (5*(5-current_difficulty)) ));
                 for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {191, 191, 191};
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+                std::this_thread::sleep_for(std::chrono::milliseconds((int) (5*(5-current_difficulty))));
                 for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {127, 127, 127};
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+                std::this_thread::sleep_for(std::chrono::milliseconds((int) (5*(5-current_difficulty))));
                 for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {63, 63, 63};
-                std::this_thread::sleep_for(std::chrono::milliseconds(25));
+                std::this_thread::sleep_for(std::chrono::milliseconds((int) (5*(5-current_difficulty))));
                 for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {0, 0, 0};
                 for (int rr = r; rr >= get_toppest_r(); rr--)

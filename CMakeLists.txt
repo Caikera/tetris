@@ -10,7 +10,6 @@ MESSAGE(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(
         tetris main.cpp
-        playground.cpp
         playground.h
         content.h
         OS.cpp

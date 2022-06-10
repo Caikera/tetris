@@ -79,6 +79,25 @@ constexpr std::array<const char*, 7> shape_name_sequence{"I", "L", "RL", "Z", "R
 constexpr std::array<double, 7> shape_center_c_sequence{2, 1.5, 1.5, 1.5, 1.5, 2, 1.5};
 constexpr std::array<double, 7> shape_center_r_sequence{2, 1.5, 1.5, 1.5, 1.5, 2, 1.5};
 
+inline int randint_7bag(){
+    static int sequence[7]{0, 1, 2, 3, 4, 5, 6};
+    static int counter = 0;
+    std::uniform_int_distribution<short>u(0,6);
+    if(counter==0){
+        for (int i = 0; i <= 9; i++) {
+            int idx = u(e);
+            int jdx = u(e);
+            int temp = sequence[idx];
+            sequence[idx] = sequence[jdx];
+            sequence[jdx] = temp;
+        }
+    }
+    int select = sequence[counter];
+    counter = counter == 6 ? 0 : counter + 1;
+    return select;
+}
+
+
 struct _shape{
 public:
     std::string       name;
@@ -94,8 +113,7 @@ public:
 //    }
 
     _shape(){
-        std::uniform_int_distribution<short>u(0,6);
-        int shape_idx = u(e) % 7;
+        int shape_idx = randint_7bag();
         name = std::string{shape_name_sequence[shape_idx]};
         center_c = shape_center_c_sequence[shape_idx];
         center_r = shape_center_r_sequence[shape_idx];
