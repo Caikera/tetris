@@ -13,7 +13,7 @@
 #include "shape.h"
 
 
-inline void quick_view(const _shape &sp){
+inline void quick_view(const _shape &sp, WINDOW* scr = stdscr){
     curses_string str;
     str += "+----------+\n";
     for(int i=0; i<=3; i++){
@@ -31,11 +31,11 @@ inline void quick_view(const _shape &sp){
     }
     str += "+----------+\n";
     for(chtype ch: str)
-        addch(ch);
-    refresh();
+        waddch(scr, ch);
+    wrefresh(scr);
 }
 
-inline void quick_view(const _playground &pg, bool view_shape = false){
+inline void quick_view(const _playground &pg, WINDOW* scr = stdscr){
     curses_string str;
     for(int r=0; r<=pg_height-1; r++){
         for(int c=0; c<=pg_width-1; c++){
@@ -50,17 +50,17 @@ inline void quick_view(const _playground &pg, bool view_shape = false){
         str += '\n';
     }
     for(chtype ch: str)
-        addch(ch);
-    refresh();
+        waddch(scr, ch);
+    wrefresh(scr);
 }
 
-inline void quick_view(chtype (&vbuffer)[pg_height][2*pg_width]){
+inline void quick_view(chtype (&vbuffer)[pg_height][2*pg_width], WINDOW* scr = stdscr){
     for(int r=4; r<=pg_height-1; r++){
         for(int c=0; c<=2*pg_width-1; c++)
             addch(vbuffer[r][c]);
-        addstr("\n");
+        waddstr(scr, "\n");
     }
-    refresh();
+    wrefresh(scr);
 }
 
 #endif //TETRIS_VIEW_H

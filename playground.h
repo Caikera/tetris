@@ -12,8 +12,9 @@
 #include "curses.h"
 #include "shape.h"
 
-constexpr int pg_height = 24 + 4 + 1;
-constexpr int pg_width  = 12 + 2;
+constexpr int pg_width  = 10 + 2;
+constexpr int pg_height = 2*(pg_width-2) + 4 + 1;
+
 
 typedef std::array<std::array<_content, pg_width>, pg_height> _pg_contents;
 
@@ -27,7 +28,7 @@ public:
     char         row_full[pg_height]; //line_full[i] = 0 indicate i-th line is full
     _playground(){
         shape_r = 0;
-        shape_c = 5;
+        shape_c = (pg_width-1)/2 - 1;
         for(int r=0; r<=pg_height-1; r++){
             for(int c=0; c<=pg_width-1; c++){
                 if(c == 0 || c == pg_width-1 || r == pg_height - 1){
@@ -191,7 +192,7 @@ public:
     void to_next_shape(){
         shape = next_shape;
         next_shape = _shape{};
-        shape_c = 5;
+        shape_c = (pg_width-1)/2 - 1;
         shape_r = 0;
     }
 
@@ -233,7 +234,7 @@ public:
 
     //  (4+pg_height-1)/2 4 pg_height-1
 
-    int get_toppest_r(int start_r = (4+pg_height-1)/2, int high_r=4 , int low_r=pg_height-1){
+    int get_toppest_r(int start_r = (4+pg_height-1)/2, int high_r=3 , int low_r=pg_height-1){
         if(start_r==high_r && start_r==low_r)
             return start_r;
         else{
@@ -249,32 +250,40 @@ public:
             row_full[r] = is_row_full(r);
     }
 
-    void remove_full(){
+    void remove_full() {
         scan_for_full();
-        for(int r = 4; r <= pg_height-2; r++)
-            if(row_full[r]){
-                for(int c=1; c<=pg_width-2; c++)
+        for (int r = 4; r <= pg_height - 2; r++)
+            if (row_full[r]) {
+                for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {255, 255, 255};
                 std::this_thread::sleep_for(std::chrono::milliseconds(25));
-                for(int c=1; c<=pg_width-2; c++)
+                for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {191, 191, 191};
                 std::this_thread::sleep_for(std::chrono::milliseconds(25));
-                for(int c=1; c<=pg_width-2; c++)
+                for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {127, 127, 127};
                 std::this_thread::sleep_for(std::chrono::milliseconds(25));
-                for(int c=1; c<=pg_width-2; c++)
+                for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {63, 63, 63};
                 std::this_thread::sleep_for(std::chrono::milliseconds(25));
-                for(int c=1; c<=pg_width-2; c++)
+                for (int c = 1; c <= pg_width - 2; c++)
                     contents[r][c].color = {0, 0, 0};
-                for(int rr=r; rr>=get_toppest_r(); rr--)
-                    for(int c=1; c<=pg_width-2; c++){
-                        contents[rr][c].filled = contents[rr-1][c].filled;
-                        contents[rr][c].color = contents[rr-1][c].color;
+                for (int rr = r; rr >= get_toppest_r(); rr--)
+                    for (int c = 1; c <= pg_width - 2; c++) {
+                        contents[rr][c].filled = contents[rr - 1][c].filled;
+                        contents[rr][c].color = contents[rr - 1][c].color;
                     }
 
             }
     }
+
+    bool exceed(){
+        return get_toppest_r() < 4;
+    }
+
+
+
+
 
 
 

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_definitions(-D PDC_WIDE)
 
-add_executable(tetris main.cpp playground.cpp playground.h content.h)
+add_executable(tetris main.cpp playground.cpp playground.h content.h mygetch.cpp mygetch.h OS.cpp OS.h)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
