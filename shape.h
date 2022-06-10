@@ -95,7 +95,7 @@ public:
 
     _shape(){
         std::uniform_int_distribution<short>u(0,6);
-        int shape_idx = u(e) % 7;
+        int shape_idx = u(e);
         name = std::string{shape_name_sequence[shape_idx]};
         center_c = shape_center_c_sequence[shape_idx];
         center_r = shape_center_r_sequence[shape_idx];
@@ -132,6 +132,7 @@ public:
             for(int c=0; c<=3; c++)
                 if(contents[r][c].filled == 1)
                     return r;
+        return 0;
     }
 
     int get_bottlest(){
@@ -139,6 +140,7 @@ public:
             for(int c=0; c<=3; c++)
                 if(contents[r][c].filled == 1)
                     return r;
+        return 3;
     }
 
     int get_leftest(){
@@ -146,6 +148,7 @@ public:
             for(int r=0; r<=3; r++)
                 if(contents[r][c].filled == 1)
                     return c;
+        return 0;
     }
 
     int get_rightest(){
@@ -153,6 +156,7 @@ public:
             for(int r=0; r<=3; r++)
                 if(contents[r][c].filled == 1)
                     return c;
+        return 3;
     }
 
     void rotate(){
