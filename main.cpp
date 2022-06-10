@@ -60,11 +60,11 @@ void task_vbuffer_display(_playground &pg){
         waddstr(main_win, text);
 
         wrefresh(main_win);
-//        std::sprintf(text, "Your score is %d.\n  Next shape is:\n", score);
-//        wmove(sub_win, 0, 0);
-//        waddstr(sub_win, text);
-//        //quick_view(pg.next_shape);
-//        wrefresh(sub_win);
+        std::sprintf(text, "Your score is %d.\nNext shape is:\n", score);
+        wmove(sub_win, 0, 0);
+        waddstr(sub_win, text);
+        quick_view(pg.next_shape, sub_win);
+        wrefresh(sub_win);
         std::this_thread::sleep_for(std::chrono::milliseconds(25));
         if(gameover) break;
     }
@@ -125,8 +125,8 @@ int main(){
     initscr();
     start_color();
     keypad(stdscr, TRUE);
-    main_win = newwin(pg_height+2, 2*(pg_width+1), 0, 0);
-    sub_win  = newwin(20, 20, 0, 2*(pg_width+1)+2);
+    main_win = newwin(pg_height+2, 2*(pg_width+4), 0, 0);
+    sub_win  = newwin(20, 20, 0, 2*(pg_width+4)+1);
     //nodelay(stdscr, TRUE);
     color_pair_init();
     auto shapes = shapes_define();
