@@ -12,8 +12,6 @@ add_executable(
         tetris main.cpp
         playground.h
         content.h
-        OS.cpp
-        OS.h
         ${APP_ICON_RESOURCE_WINDOWS}
 )
 
