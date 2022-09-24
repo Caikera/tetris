@@ -16,19 +16,24 @@ add_executable(
 )
 
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+IF(CMAKE_SYSTEM_NAME MATCHES "Windows")
     MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
     add_definitions(-D ENV_WINDOWS)
-    include_directories("D:/lib/PDCurses-3.9")
-    find_library(Curses pdcurses.a D:/lib/PDCurses-3.9/wincon)
+    include_directories("D:/lib/PDCurses-3.9_mingw")
+    find_file(Curses
+            NAMES pdcurses.a
+            PATHS "D:/lib/PDCurses-3.9_mingw/wincon" NO_DEFAULT_PATH
+            REQUIRED
+            )
+    MESSAGE(STATUS "${Curses}")
     target_link_libraries(tetris ${Curses})
-ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+ELSEIF(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
     add_definitions(-D ENV_DARWIN)
     find_package(Curses REQUIRED)
     include_directories(${CURSES_INCLUDE_DIR})
     target_link_libraries(tetris curses)
-ELSE()
+ELSEIF(CMAKE_SYSTEM_NAME MATCHES "CYGWIN")
     MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
     add_definitions(-D CYGWIN)
     find_package(Curses REQUIRED)

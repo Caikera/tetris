@@ -101,7 +101,7 @@ void task_shape_logic(){
             gameover = true;
             break;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-get_difficulty(-1))*60));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int) (5-get_difficulty(-1))*100));
     }
 }
 

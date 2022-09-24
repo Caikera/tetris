@@ -12,7 +12,7 @@
 #include "curses.h"
 #include "shape.h"
 
-constexpr int pg_width  = 10 + 2;
+constexpr int pg_width  = 12 + 2;
 constexpr int pg_height = 2*(pg_width-2) + 4 + 1;
 
 double get_difficulty(double set);

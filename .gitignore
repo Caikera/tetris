@@ -1,1 +1,13 @@
-cmake-build-debug/
+*.*
+
+!*.c
+!*.cpp
+!*.h
+!*.hpp
+!CMakeLists.txt
+!game_view.gif
+!README.md
+!appicon.rc
+!*.ico
+!*.png
+!*.gif
